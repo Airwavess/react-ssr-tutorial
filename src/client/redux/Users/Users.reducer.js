@@ -1,8 +1,8 @@
-import { STORE_USER_DATA } from "./Users.actions";
+import { FETCH_USERS } from "./users.actions";
 
 const reducer = (state = { users: [] }, action) => {
   switch (action.type) {
-    case STORE_USER_DATA:
+    case FETCH_USERS:
       return {
         ...state,
         users: action.payload,

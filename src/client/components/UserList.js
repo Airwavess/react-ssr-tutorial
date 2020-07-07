@@ -1,16 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { storeUserData } from "../redux/Users/Users.actions";
+import { fetchUsers } from "../redux/users/users.actions";
 
 const UserList = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users);
   useEffect(() => {
-    axios.get("https://reqres.in/api/users?page=2").then((res) => {
-      dispatch(storeUserData(res.data.data));
-    });
+    dispatch(fetchUsers());
   }, []);
 
   return (
