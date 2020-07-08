@@ -1,8 +1,6 @@
 import express from "express";
-import React from "react";
-import { renderToString } from "react-dom/server";
-import { StaticRouter } from "react-router-dom";
-import { Provider } from "react-redux";
+import { matchRoutes } from "react-router-config";
+import render from "./renderHelper";
 import Routes from "./client/Routes";
 import store from "./client/redux";
 
@@ -10,25 +8,15 @@ const app = express();
 
 app.use(express.static("public"));
 app.get("*", (req, res) => {
-  const content = renderToString(
-    <Provider store={store}>
-      <StaticRouter location={req.path}>
-        <Routes />
-      </StaticRouter>
-    </Provider>
-  );
+  const promises = matchRoutes(Routes, req.path).map(({ route }) => {
+    const component = route.component;
+    return component.getInitialData ? component.getInitialData(store) : null;
+  });
 
-  const html = `
-    <html>
-      <head></head>
-      <body>
-        <div id="root">${content}</div>
-        <script src="bundle.js"></script>
-      </body>
-    </html>
-  `;
-
-  res.send(html);
+  Promise.all(promises).then(() => {
+    const html = render(req, store);
+    res.send(html);
+  });
 });
 
 app.listen(3000, () => {

@@ -16,11 +16,15 @@ const UserList = () => {
       <Link to="/">To home page</Link>
       <ul>
         {users.map((user) => (
-          <li key={user.id}>{user.first_name} </li>
+          <li key={user.id}>{user.first_name}</li>
         ))}
       </ul>
     </div>
   );
+};
+
+UserList.getInitialData = async (store) => {
+  return store.dispatch(fetchUsers());
 };
 
 export default UserList;
